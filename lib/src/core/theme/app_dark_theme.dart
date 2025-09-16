@@ -1,4 +1,4 @@
-import 'package:exito/core/constants/constants.dart';
+import 'package:exito/src/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class AppDarkTheme {
@@ -21,6 +21,10 @@ class AppDarkTheme {
       ),
       fontFamily: Constants.fontFamily,
       pageTransitionsTheme: Constants.pageTransition,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Constants.primaryDarkColor,
+        foregroundColor: Constants.primaryLightColor,
+      ),
     );
   }
 }

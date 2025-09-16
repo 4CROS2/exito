@@ -1,4 +1,4 @@
-import 'package:exito/core/theme/theme.dart';
+import 'package:exito/src/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 extension ThemeExtension on BuildContext {
@@ -7,6 +7,11 @@ extension ThemeExtension on BuildContext {
   TextTheme get textTheme => theme.textTheme;
   bool get isDarkMode => theme.brightness == Brightness.dark;
   bool get isLightMode => theme.brightness == Brightness.light;
+
+  Color get primaryColor => colorScheme.primary;
+  Color get secondaryColor => colorScheme.secondary;
+  Color get tertiaryColor => colorScheme.tertiary;
+
   void initializeTheme() {
     AppLightTheme.initialize(this);
     AppDarkTheme.initialize(this);

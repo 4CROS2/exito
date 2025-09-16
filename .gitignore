@@ -46,3 +46,4 @@ app.*.map.json
 
 # VS Code will place build artifacts here
 /.vscode/
+/lib/core/generated/
