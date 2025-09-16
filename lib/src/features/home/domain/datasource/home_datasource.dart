@@ -1,3 +1,3 @@
 abstract interface class HomeDatasource {
-  Future<List<Map<String, String>>> getCategories();
+  Future<List<Map<String, dynamic>>> getCategories();
 }
