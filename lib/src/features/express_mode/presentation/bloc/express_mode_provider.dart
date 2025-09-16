@@ -7,54 +7,54 @@ class ExpressModeProvider extends ChangeNotifier {
   ExpressModeProvider({required ExpressModeUsecase usecase})
     : _usecase = usecase {
     _startCheckingAvailability();
+    loadExpressMode();
   }
 
-  /// Tiempo personalizado para iniciar el modo exprés (variable de entorno)
-  /// por defecto es 10 (10 AM)
-  /// para cambiarlo, usar --dart-define=CUSTOM_TIME=9 (9 AM) al compilar
-  /// o --dart-define=CUSTOM_TIME=11 (11 AM)
-  /// solo se permiten horas entre 6 y 15 (6 AM a 3 PM)
-  /// si se ingresa un valor inválido, se usará el valor por defecto (10)
-  /// Ejemplo:
-  /// flutter run --dart-define=CUSTOM_TIME=9
-  /// flutter build apk --dart-define=CUSTOM_TIME=11
+  final ExpressModeUsecase _usecase;
+
   final String customTime = const String.fromEnvironment(
     'CUSTOM_TIME',
     defaultValue: '10',
   );
 
-  final ExpressModeUsecase _usecase;
-
-  bool _isExpressMode = false;
-  bool _isExpressModeAvailable = false;
+  bool _isExpressMode = false; // decisión del usuario
+  bool _isExpressModeAvailable = false; // disponibilidad por horario
 
   bool get isExpressMode => _isExpressMode;
   bool get isExpressModeAvailable => _isExpressModeAvailable;
 
-  void toggleExpressMode({bool? isEnabled}) async {
+  /// Usuario cambia el switch
+  Future<void> toggleExpressMode({bool? isEnabled}) async {
     _isExpressMode = isEnabled ?? !_isExpressMode;
     await _usecase.toggleExpressMode(isEnabled: _isExpressMode);
     notifyListeners();
   }
 
-  void loadExpressMode() async {
-    _isExpressMode = await _usecase.isExpressModeEnabled();
+  /// Carga el estado desde base de datos con validación de disponibilidad
+  Future<void> loadExpressMode() async {
+    final bool savedMode = await _usecase.isExpressModeEnabled();
+
+    if (_isExpressModeAvailable) {
+      // ✅ Dentro del horario → respetamos lo guardado
+      _isExpressMode = savedMode;
+    } else {
+      // ⛔ Fuera del horario → forzamos OFF
+      _isExpressMode = false;
+      await _usecase.toggleExpressMode(isEnabled: false);
+    }
+
     notifyListeners();
   }
 
-  /// 🔄 Ejecuta checkExpressModeAvailable automáticamente cada minuto
+  /// 🔄 Verifica disponibilidad automáticamente
   void _startCheckingAvailability() {
-    // chequeo inicial al crear el provider
-    checkExpressModeAvailable();
-
-    // luego cada 1 minuto vuelve a validar
-    Timer.periodic(const Duration(minutes: 1), (_) {
+    checkExpressModeAvailable(); // chequeo inicial
+    Timer.periodic(const Duration(seconds: 5), (_) {
       checkExpressModeAvailable();
     });
   }
 
-  /// Verifica si el modo exprés está disponible según la hora actual
-  /// y la hora personalizada (customTime)
+  /// Revisa si está dentro del horario permitido
   void checkExpressModeAvailable() {
     final DateTime now = DateTime.now();
     final DateTime start = DateTime(
@@ -69,6 +69,10 @@ class ExpressModeProvider extends ChangeNotifier {
 
     if (available != _isExpressModeAvailable) {
       _isExpressModeAvailable = available;
+
+      // ⚡ Si cambió de disponible → forzamos recarga del estado
+      loadExpressMode();
+    } else {
       notifyListeners();
     }
   }
