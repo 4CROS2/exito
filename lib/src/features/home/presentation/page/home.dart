@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
       create: (BuildContext context) => sl<HomeProvider>(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Exito'),
+          title: const Text('éxito'),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.sunny),
