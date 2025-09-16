@@ -1,4 +1,5 @@
 import 'package:exito/src/core/app/presentation/bloc/app_provider.dart';
+import 'package:exito/src/core/extension/media_query_extension.dart';
 import 'package:exito/src/core/extension/theme_extension.dart';
 import 'package:exito/src/core/router/router.dart';
 import 'package:exito/src/core/theme/theme.dart';
@@ -26,25 +27,32 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: <SingleChildWidget>[
-        ChangeNotifierProvider<AppProvider>(
-          create: (BuildContext context) => sl<AppProvider>(),
+    return MediaQuery(
+      data: context.mediaQuery.copyWith(
+        textScaler: context.mediaQuery.textScaler.clamp(
+          minScaleFactor: 0.8,
+          maxScaleFactor: 1.3,
         ),
-      ],
-      child: Builder(
-        builder: (BuildContext context) {
-          final AppProvider appProvider = context.watch<AppProvider>();
-
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            title: 'Grupo Exito',
-            theme: AppLightTheme.instance,
-            darkTheme: AppDarkTheme.instance,
-            themeMode: appProvider.themeMode,
-            routerConfig: _appRouter.router,
-          );
-        },
+      ),
+      child: MultiProvider(
+        providers: <SingleChildWidget>[
+          ChangeNotifierProvider<AppProvider>(
+            create: (BuildContext context) => sl<AppProvider>(),
+          ),
+        ],
+        child: Builder(
+          builder: (BuildContext context) {
+            final AppProvider appProvider = context.watch<AppProvider>();
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              title: 'Grupo Exito',
+              theme: AppLightTheme.instance,
+              darkTheme: AppDarkTheme.instance,
+              themeMode: appProvider.themeMode,
+              routerConfig: _appRouter.router,
+            );
+          },
+        ),
       ),
     );
   }
