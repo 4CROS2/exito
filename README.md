@@ -66,8 +66,27 @@ flutter build apk --dart-define=API_URL=https://fakestoreapi.com
 ```
 Puedes agregar los flags adicionales si necesitas probar comportamientos específicos:
 ```
-flutter build apk --dart-define=API_URL=https://fakestoreapi.com --dart-define=FORCE_SWITCH_VISIBLE=true --dart-define=CUSTOM_TIME=11
+flutter build apk --dart-define=API_URL=https://fakestoreapi.com --dart-define=CUSTOM_TIME=11
 ```
+
+
+## Ejecutar el proyecto
+
+Para ejecutar la aplicación en modo desarrollo:
+
+1. Asegúrate de tener un emulador o dispositivo conectado.
+2. Instala las dependencias (ver sección anterior).
+3. Ejecuta:
+	```
+	flutter run --dart-define=API_URL=https://fakestoreapi.com
+	```
+	Puedes agregar los flags adicionales según lo que necesites probar:
+	```
+	flutter run --dart-define=API_URL=https://fakestoreapi.com --dart-define=FORCE_SWITCH_VISIBLE=true --dart-define=CUSTOM_TIME=11
+	```
+4. La app se compilará y abrirá en el dispositivo/emulador seleccionado.
+
+
 
 ## Estructura del proyecto
 
