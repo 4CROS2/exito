@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class FadeWidget extends StatefulWidget {
   const FadeWidget({
     required this.index,
-    this.animationDuration = const Duration(milliseconds: 500),
     required this.child,
+    this.animationDuration = const Duration(milliseconds: 500),
     super.key,
   });
   final int index;

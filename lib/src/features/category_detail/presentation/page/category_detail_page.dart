@@ -24,7 +24,18 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
           sl<CategoryDetailProvider>()
             ..loadProductsByCategory(category: widget.categoryFilter),
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text(widget.categoryFilter.capitalize()),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {},
+              icon: Badge.count(
+                count: 2,
+                child: const Icon(Icons.shopping_cart),
+              ),
+            ),
+          ],
+        ),
         body: Builder(
           builder: (BuildContext context) {
             final CategoryDetailProvider provider = context
@@ -44,7 +55,7 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
               mainAxisSpacing: Constants.mainPaddingValue,
               animationDuration: Constants.animationDuration,
               contentPadding: Constants.contentPadding,
-              aspectRatio: 1/1.5,
+              aspectRatio: 1 / 1.5,
               items: products,
               builder: (BuildContext context, int index, ProductEntity item) {
                 return ProductTile(product: item);

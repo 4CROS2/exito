@@ -26,6 +26,13 @@ class AppLightTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: Constants.primaryLightColor,
         foregroundColor: Colors.black,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          fontFamily: Constants.fontFamily,
+        ),
       ),
     );
   }

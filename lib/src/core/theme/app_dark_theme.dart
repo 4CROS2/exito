@@ -24,6 +24,13 @@ class AppDarkTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: Constants.primaryDarkColor,
         foregroundColor: Constants.primaryLightColor,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          color: Constants.primaryLightColor,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          fontFamily: Constants.fontFamily,
+        ),
       ),
     );
   }

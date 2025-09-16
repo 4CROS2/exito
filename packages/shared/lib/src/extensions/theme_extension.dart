@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+/// Extension para facilitar el acceso a Theme y propiedades relacionadas
+/// Uso: context.theme, context.colorScheme, etc.
+///   Ejemplo:
+///   ThemeData theme = context.theme;
+///   Color primaryColor = context.primaryColor;
+///  bool isDarkMode = context.isDarkMode;
+/// bool isLightMode = context.isLightMode;
+/// ColorScheme colorScheme = context.colorScheme;
+
 extension ThemeExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get colorScheme => theme.colorScheme;

@@ -27,10 +27,7 @@ class _HomeState extends State<Home> {
           final HomeProvider homeProvider = context.watch<HomeProvider>();
           return Scaffold(
             appBar: AppBar(
-              title: const Text(
-                'éxito',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+              title: const Text('éxito'),
               centerTitle: true,
               actions: <Widget>[
                 IconButton(

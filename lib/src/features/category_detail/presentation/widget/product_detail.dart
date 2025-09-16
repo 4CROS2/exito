@@ -1,5 +1,6 @@
 import 'package:exito/src/core/constants/constants.dart';
 import 'package:exito/src/features/category_detail/domain/entity/products_entity.dart';
+import 'package:exito/src/features/category_detail/presentation/widget/product_button.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 import 'package:shared/widgets.dart';
@@ -47,23 +48,28 @@ class _ProductTileState extends State<ProductTile> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: Constants.mainPaddingValue / 2,
                 children: <Widget>[
                   Text(
                     widget.product.title,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.white,
+                      height: 1,
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),
                   ),
-                  //use intl package to format price
                   Text(
-                    widget.product.price.toString(),
+                    widget.product.price.toString().toCurrency(),
                     style: const TextStyle(
                       color: Constants.primaryLightColor,
-                      fontSize: 16,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  ProductButton(onTap: () {}),
                 ],
               ),
             ),

@@ -20,8 +20,6 @@ class CategoryTile extends StatefulWidget {
 
 class _CategoryTileState extends State<CategoryTile>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
