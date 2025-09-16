@@ -18,7 +18,7 @@ class IHomeRepository implements HomeRepository {
       final CategoryModel model = CategoryModel.fromJson(json: category);
 
       // si ya existe la categoría, puedes decidir si reemplazar o mantener el primero
-      grouped[model.name] = model;
+      grouped[model.categoryName] = model;
     }
 
     // devolvemos solo los valores únicos

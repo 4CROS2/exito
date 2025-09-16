@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:exito/src/features/home/domain/datasource/home_datasource.dart';
+import 'package:exito/src/features/category_detail/domain/datasource/category_detail_datasource.dart';
 import 'package:http/http.dart' as http;
 
-class IHomeDatasource implements HomeDatasource {
+class ICategoryDetailDatasource implements CategoryDetailDatasource {
   @override
-  Future<List<Map<String, dynamic>>> getCategories() async {
-    final String apiUrl = const String.fromEnvironment('API_URL');
+  Future<List<Map<String, dynamic>>> getProducts() async {
     try {
+      final String apiUrl = const String.fromEnvironment('API_URL');
       final http.Response response = await http.get(
         Uri.parse('$apiUrl/products'),
       );

@@ -5,8 +5,10 @@ import 'package:exito/src/features/home/presentation/bloc/home_provider.dart';
 import 'package:exito/src/features/home/presentation/widgets/category_tile.dart';
 import 'package:exito/src/injection/container_injection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared/shared.dart';
+import 'package:shared/widgets.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -25,7 +27,11 @@ class _HomeState extends State<Home> {
           final HomeProvider homeProvider = context.watch<HomeProvider>();
           return Scaffold(
             appBar: AppBar(
-              title: const Text('éxito'),
+              title: const Text(
+                'éxito',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              centerTitle: true,
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.sunny),
@@ -37,10 +43,25 @@ class _HomeState extends State<Home> {
             ),
             body: switch (homeProvider.status) {
               Status.loading => const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator.adaptive(),
               ),
-              Status.success => _CategoryGrid(
-                categories: homeProvider.categories,
+              Status.success => GridBuilder<CategoryEntity>(
+                items: homeProvider.categories,
+                animationDuration: Constants.animationDuration,
+                contentPadding: Constants.contentPadding,
+                crossAxisSpacing: Constants.mainPaddingValue,
+                mainAxisSpacing: Constants.mainPaddingValue,
+                onRefresh: () async => homeProvider.getCategories(),
+                builder:
+                    (BuildContext context, int index, CategoryEntity item) {
+                      return CategoryTile(
+                        onTap: () {
+                          context.push('/categoryDetail/${item.categoryName}');
+                        },
+                        title: item.categoryName.capitalize(),
+                        imageUrl: item.imageUrl,
+                      );
+                    },
               ),
               Status.error => Center(child: Text(homeProvider.errorMessage)),
               _ => const SizedBox.shrink(),
@@ -48,32 +69,6 @@ class _HomeState extends State<Home> {
           );
         },
       ),
-    );
-  }
-}
-
-class _CategoryGrid extends StatelessWidget {
-  const _CategoryGrid({required this.categories});
-  final List<CategoryEntity> categories;
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: Constants.contentPadding,
-      itemCount: categories.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 1,
-        mainAxisSpacing: Constants.mainPaddingValue,
-        crossAxisSpacing: Constants.mainPaddingValue,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return CategoryTile(
-          index: index,
-          title: categories[index].name.capitalize(),
-          imageUrl: categories[index].imageUrl,
-        );
-      },
     );
   }
 }
