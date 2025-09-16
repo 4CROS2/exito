@@ -1,5 +1,6 @@
 import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
 import 'package:exito/src/features/cart/domain/usecase/cart_usecase.dart';
+import 'package:exito/src/features/category_detail/domain/entity/products_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
@@ -12,6 +13,7 @@ class CartProvider extends ChangeNotifier {
 
   Status _addToCartStatus = Status.initial;
   Status _getCartItemsStatus = Status.initial;
+  Status _updateItemStatus = Status.initial;
   final String _message = '';
   final List<CartItemEntity> _cartItems;
 
@@ -20,22 +22,7 @@ class CartProvider extends ChangeNotifier {
   Status get addToCartStatus => _addToCartStatus;
   Status get getCartItemsStatus => _getCartItemsStatus;
   String get message => _message;
-
-  void addItem({required CartItemEntity item}) async {
-    try {
-      _addToCartStatus = Status.loading;
-      await _cartUseCase.addToCart(item: item);
-      _cartItems.add(item);
-      _addToCartStatus = Status.success;
-      notifyListeners();
-    } catch (e) {
-      _addToCartStatus = Status.error;
-      notifyListeners();
-    } finally {
-      _addToCartStatus = Status.initial;
-      notifyListeners();
-    }
-  }
+  Status get updateItemStatus => _updateItemStatus;
 
   void getCartItems() async {
     try {
@@ -47,6 +34,54 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _getCartItemsStatus = Status.error;
+      notifyListeners();
+    }
+  }
+
+  void addItem({required ProductEntity item}) async {
+    try {
+      _addToCartStatus = Status.loading;
+      await _cartUseCase.addToCart(
+        item: CartItemEntity.fromProductEntity(item, 1),
+      );
+      _cartItems.add(CartItemEntity.fromProductEntity(item, 1));
+      _addToCartStatus = Status.success;
+      notifyListeners();
+    } catch (e) {
+      _addToCartStatus = Status.error;
+      notifyListeners();
+    } finally {
+      _addToCartStatus = Status.initial;
+      notifyListeners();
+    }
+  }
+
+  void updateItemQuantity({
+    required ProductEntity item,
+    required int quantity,
+  }) async {
+    try {
+      _updateItemStatus = Status.loading;
+      await _cartUseCase.updateCartItem(
+        item: CartItemEntity.fromProductEntity(item, quantity),
+      );
+      final int index = _cartItems.indexWhere(
+        (ProductEntity p) => p.id == item.id,
+      );
+      if (index != -1) {
+        if (quantity == 0) {
+          _cartItems.removeAt(index);
+        } else {
+          _cartItems[index] = CartItemEntity.fromProductEntity(item, quantity);
+        }
+      }
+      _updateItemStatus = Status.success;
+      notifyListeners();
+    } catch (e) {
+      _updateItemStatus = Status.error;
+      notifyListeners();
+    } finally {
+      _updateItemStatus = Status.initial;
       notifyListeners();
     }
   }

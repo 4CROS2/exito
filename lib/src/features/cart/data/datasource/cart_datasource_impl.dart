@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:exito/src/features/cart/data/model/cart_item_mode.dart';
+import 'package:exito/src/features/cart/data/model/cart_item_model.dart';
 import 'package:exito/src/features/cart/domain/datasource/cart_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,6 +10,9 @@ class ICartDatasource implements CartDatasource {
   /// Obtiene la instancia de SharedPreferences
   Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
+
+  /// Agrega un item al carrito
+  /// [item] El item a agregar
 
   @override
   Future<void> addToCart({required CartItemModel item}) async {
@@ -27,6 +30,8 @@ class ICartDatasource implements CartDatasource {
     await prefs.setString(_cartKey, jsonEncode(cartItems));
   }
 
+  /// Elimina un item del carrito
+  /// [id] El id del item a eliminar
   @override
   Future<void> removeFromCart({required String id}) async {
     final SharedPreferences prefs = await _prefs;
@@ -54,5 +59,35 @@ class ICartDatasource implements CartDatasource {
     }
 
     return List<Map<String, dynamic>>.from(jsonDecode(cartJson));
+  }
+
+  @override
+  Future<void> updateCartItem({required CartItemModel item}) async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      final String? cartJson = prefs.getString(_cartKey);
+
+      if (cartJson == null) {
+        return;
+      }
+
+      List<Map<String, dynamic>> cartItems = List<Map<String, dynamic>>.from(
+        jsonDecode(cartJson),
+      );
+      final int index = cartItems.indexWhere(
+        (Map<String, dynamic> p) => p['id'] == item.id,
+      );
+      if (index != -1) {
+        if (item.quantity == 0) {
+          cartItems.removeAt(index);
+        } else {
+          cartItems[index] = item.toJson();
+        }
+      }
+
+      await prefs.setString(_cartKey, jsonEncode(cartItems));
+    } catch (e) {
+      rethrow;
+    }
   }
 }

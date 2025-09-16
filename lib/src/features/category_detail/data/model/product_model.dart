@@ -10,7 +10,7 @@ class ProductModel extends ProductEntity {
     required super.imageUrl,
   });
 
-  factory ProductModel.fromMap(Map<String, dynamic> map) {
+  factory ProductModel.fromJson(Map<String, dynamic> map) {
     try {
       final Map<String, dynamic> ratingMap = Map<String, dynamic>.from(
         map['rating'] as Map<String, dynamic>,
@@ -19,7 +19,7 @@ class ProductModel extends ProductEntity {
       return ProductModel(
         id: map['id'],
         title: map['title'],
-        rating: ProductRatingModel.fromMap(json: ratingMap),
+        rating: ProductRatingModel.fromJson(json: ratingMap),
         price: price,
         categoryName: map['category'],
         imageUrl: map['image'],
@@ -58,7 +58,7 @@ class ProductModel extends ProductEntity {
 class ProductRatingModel extends ProductRatingEntity {
   ProductRatingModel({required super.rate, required super.count});
 
-  factory ProductRatingModel.fromMap({required Map<String, dynamic> json}) {
+  factory ProductRatingModel.fromJson({required Map<String, dynamic> json}) {
     return ProductRatingModel(
       rate: double.parse(json['rate'].toString()),
       count: json['count'] ?? 0,

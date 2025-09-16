@@ -1,4 +1,4 @@
-import 'package:exito/src/features/cart/data/model/cart_item_mode.dart';
+import 'package:exito/src/features/cart/data/model/cart_item_model.dart';
 import 'package:exito/src/features/cart/domain/datasource/cart_datasource.dart';
 import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
 import 'package:exito/src/features/cart/domain/repository/cart_repository.dart';
@@ -23,7 +23,13 @@ class ICartRepository implements CartRepository {
     final List<Map<String, dynamic>> cartItems = await _datasource
         .getCartItems();
     return cartItems
-        .map((Map<String, dynamic> item) => CartItemModel.fromJson(item))
+        .map((Map<String, dynamic> item) => CartItemModel.fromJson(json: item))
         .toList();
+  }
+
+  @override
+  Future<void> updateCartItem({required CartItemEntity item}) async {
+    final CartItemModel model = CartItemModel.fromEntity(item);
+    await _datasource.updateCartItem(item: model);
   }
 }

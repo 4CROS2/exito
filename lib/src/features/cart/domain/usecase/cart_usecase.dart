@@ -9,6 +9,15 @@ class CartUseCase {
     await _repository.addToCart(item: item);
   }
 
+  Future<void> updateCartItem({required CartItemEntity item}) async {
+    try {
+      await _repository.updateCartItem(item: item);
+    } catch (e, s) {
+      print(s);
+      rethrow;
+    }
+  }
+
   Future<void> removeFromCart({required String id}) async {
     await _repository.removeFromCart(id: id);
   }
