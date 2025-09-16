@@ -1,6 +1,7 @@
 import 'package:exito/src/core/app/presentation/bloc/app_provider.dart';
 import 'package:exito/src/core/router/router.dart';
 import 'package:exito/src/core/theme/theme.dart';
+import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/injection/container_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,9 @@ class _AppState extends State<App> {
         providers: <ListenableProvider<dynamic>>[
           ChangeNotifierProvider<AppProvider>(
             create: (BuildContext context) => sl<AppProvider>(),
+          ),
+          ChangeNotifierProvider<CartProvider>(
+            create: (BuildContext context) => sl<CartProvider>()..getCartItems(),
           ),
         ],
         child: Builder(

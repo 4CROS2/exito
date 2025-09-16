@@ -1,5 +1,5 @@
-import 'package:exito/src/core/app/presentation/bloc/app_provider.dart';
 import 'package:exito/src/core/constants/constants.dart';
+import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/home/domain/entity/category_entity.dart';
 import 'package:exito/src/features/home/presentation/bloc/home_provider.dart';
 import 'package:exito/src/features/home/presentation/widgets/category_tile.dart';
@@ -25,16 +25,17 @@ class _HomeState extends State<Home> {
       child: Builder(
         builder: (BuildContext context) {
           final HomeProvider homeProvider = context.watch<HomeProvider>();
+          final CartProvider cartProvider = context.watch<CartProvider>();
           return Scaffold(
             appBar: AppBar(
               title: const Text('éxito'),
               centerTitle: true,
               actions: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.sunny),
-                  onPressed: () {
-                    context.read<AppProvider>().toggleTheme();
+                CartButton(
+                  onTap: () {
+                    context.push('/cart');
                   },
+                  itemCount: cartProvider.itemCount,
                 ),
               ],
             ),

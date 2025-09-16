@@ -24,8 +24,7 @@ class ProductModel extends ProductEntity {
         categoryName: map['category'],
         imageUrl: map['image'],
       );
-    } catch (e, s) {
-      print(s);
+    } catch (e) {
       rethrow;
     }
   }

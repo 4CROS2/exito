@@ -1,7 +1,10 @@
 import 'package:exito/src/core/constants/constants.dart';
+import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
+import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/category_detail/domain/entity/products_entity.dart';
 import 'package:exito/src/features/category_detail/presentation/widget/product_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared/shared.dart';
 import 'package:shared/widgets.dart';
 
@@ -69,7 +72,16 @@ class _ProductTileState extends State<ProductTile> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  ProductButton(onTap: () {}),
+                  ProductButton(
+                    onTap: () {
+                      context.read<CartProvider>().addItem(
+                        item: CartItemEntity(
+                          id: widget.product.id,
+                          quantity: 1,
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
