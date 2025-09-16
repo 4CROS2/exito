@@ -29,4 +29,16 @@ class CartItemEntity extends ProductEntity {
       quantity: quantity,
     );
   }
+
+  CartItemEntity copyWith({int? quantity}) {
+    return CartItemEntity(
+      id: id,
+      title: title,
+      rating: rating,
+      price: price,
+      categoryName: categoryName,
+      imageUrl: imageUrl,
+      quantity: quantity ?? this.quantity,
+    );
+  }
 }

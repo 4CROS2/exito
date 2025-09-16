@@ -57,9 +57,20 @@ class _ProductTileState extends State<ProductTile> {
                   final bool isInCart = cartProvider.cartItems.any(
                     (ProductEntity p) => p.id == widget.product.id,
                   );
+                  final bool isExpressMode = cartProvider.expressCartItems.any(
+                    (ProductEntity p) => p.id == widget.product.id,
+                  );
 
                   final int quantity = isInCart
                       ? cartProvider.cartItems
+                            .firstWhere(
+                              (ProductEntity p) => p.id == widget.product.id,
+                            )
+                            .quantity
+                      : 0;
+
+                  final int expressQuantity = isExpressMode
+                      ? cartProvider.expressCartItems
                             .firstWhere(
                               (ProductEntity p) => p.id == widget.product.id,
                             )
@@ -144,7 +155,7 @@ class _ProductTileState extends State<ProductTile> {
                                     },
                                 child: switch (value) {
                                   true => SecondaryButton(
-                                    quantity: quantity,
+                                    quantity: expressQuantity,
                                     cartProvider: cartProvider,
                                     product: widget.product,
                                   ),
