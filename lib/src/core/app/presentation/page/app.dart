@@ -40,7 +40,8 @@ class _AppState extends State<App> {
             create: (BuildContext context) => sl<AppProvider>(),
           ),
           ChangeNotifierProvider<CartProvider>(
-            create: (BuildContext context) => sl<CartProvider>()..getCartItems(),
+            create: (BuildContext context) =>
+                sl<CartProvider>()..getCartItems(),
           ),
         ],
         child: Builder(

@@ -117,7 +117,7 @@ class _ProductTileState extends State<ProductTile> {
                               );
                             },
                         child: switch (isInCart) {
-                          true => ProductQuatityButton(
+                          true => ProductQuantityButton(
                             quantity: quantity,
                             onAdd: () {
                               cartProvider.updateItemQuantity(

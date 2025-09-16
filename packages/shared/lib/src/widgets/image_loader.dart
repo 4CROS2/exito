@@ -41,7 +41,7 @@ class _ImageLoaderState extends State<ImageLoader> {
             ),
           );
         },
-      
+
         errorWidget: (BuildContext context, String url, Object error) {
           return const Icon(Icons.error);
         },

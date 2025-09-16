@@ -45,7 +45,10 @@ class _CartPageState extends State<CartPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text('Total', style: _textStyle),
-                      Text(totalPrice.toString().toCurrency(), style: _textStyle),
+                      Text(
+                        totalPrice.toString().toCurrency(),
+                        style: _textStyle,
+                      ),
                     ],
                   ),
                 ),

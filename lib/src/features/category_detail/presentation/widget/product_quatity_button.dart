@@ -1,8 +1,8 @@
 import 'package:exito/src/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
-class ProductQuatityButton extends StatefulWidget {
-  const ProductQuatityButton({
+class ProductQuantityButton extends StatefulWidget {
+  const ProductQuantityButton({
     required this.quantity,
     this.onAdd,
     this.onRemove,
@@ -13,10 +13,10 @@ class ProductQuatityButton extends StatefulWidget {
   final VoidCallback? onRemove;
 
   @override
-  State<ProductQuatityButton> createState() => _ProductQuatityButtonState();
+  State<ProductQuantityButton> createState() => _ProductQuantityButtonState();
 }
 
-class _ProductQuatityButtonState extends State<ProductQuatityButton> {
+class _ProductQuantityButtonState extends State<ProductQuantityButton> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
