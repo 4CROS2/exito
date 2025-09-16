@@ -12,5 +12,10 @@ abstract interface class CartDatasource {
   Future<List<Map<String, dynamic>>> getCartItems();
 
   /// Actualiza un producto existente en el carrito en la fuente de datos.
-  Future<void> updateCartItem({required CartItemModel item});
+  Future<void> updateCartItem({
+    required CartItemModel item,
+    bool isExpress = false,
+  });
+
+  Future<List<Map<String, dynamic>>> getExpressCartItems();
 }

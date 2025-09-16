@@ -1,5 +1,6 @@
 import 'package:exito/src/core/constants/constants.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
+import 'package:exito/src/features/express_mode/presentation/bloc/express_mode_provider.dart';
 import 'package:exito/src/features/express_mode/presentation/page/express_mode_switch.dart';
 import 'package:exito/src/features/home/domain/entity/category_entity.dart';
 import 'package:exito/src/features/home/presentation/bloc/home_provider.dart';
@@ -42,12 +43,18 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: false,
       actions: <Widget>[
         const ExpressModeSwitch(),
-        Selector<CartProvider, int>(
-          selector: (_, CartProvider cart) => cart.itemCount,
-          builder: (_, int itemCount, _) {
-            return CartButton(
-              onTap: () => context.push('/cart'),
-              itemCount: itemCount,
+        Selector<ExpressModeProvider, bool>(
+          selector: (_, ExpressModeProvider express) => express.isExpressMode,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return Selector<CartProvider, int>(
+              selector: (_, CartProvider cart) =>
+                  value ? cart.expressItemCount : cart.itemCount,
+              builder: (_, int itemCount, _) {
+                return CartButton(
+                  onTap: () => context.push('/cart'),
+                  itemCount: itemCount,
+                );
+              },
             );
           },
         ),

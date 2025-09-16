@@ -19,17 +19,40 @@ class ICartRepository implements CartRepository {
   }
 
   @override
-  Future<List<CartItemModel>> getCartItems() async {
+  Future<(List<CartItemModel>, List<CartItemModel>)> getCartItems() async {
     final List<Map<String, dynamic>> cartItems = await _datasource
         .getCartItems();
-    return cartItems
-        .map((Map<String, dynamic> item) => CartItemModel.fromJson(json: item))
-        .toList();
+    final List<Map<String, dynamic>> expressCartItems = await _datasource
+        .getExpressCartItems();
+    return (
+      cartItems
+          .map(
+            (Map<String, dynamic> item) => CartItemModel.fromJson(json: item),
+          )
+          .toList(),
+      expressCartItems
+          .map(
+            (Map<String, dynamic> item) => CartItemModel.fromJson(json: item),
+          )
+          .toList(),
+    );
   }
 
   @override
-  Future<void> updateCartItem({required CartItemEntity item}) async {
+  Future<void> updateCartItem({
+    required CartItemEntity item,
+    required bool isExpress,
+  }) async {
     final CartItemModel model = CartItemModel.fromEntity(item);
-    await _datasource.updateCartItem(item: model);
+    await _datasource.updateCartItem(item: model, isExpress: isExpress);
+  }
+
+  @override
+  Future<List<CartItemModel>> getExpressCartItems() async {
+    final List<Map<String, dynamic>> cartItems = await _datasource
+        .getExpressCartItems();
+    return cartItems
+        .map((Map<String, dynamic> item) => CartItemModel.fromJson(json: item))
+        .toList();
   }
 }

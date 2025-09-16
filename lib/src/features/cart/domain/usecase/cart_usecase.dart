@@ -14,9 +14,12 @@ class CartUseCase {
   }
 
   /// Actualiza un producto existente en el carrito.
-  Future<void> updateCartItem({required CartItemEntity item}) async {
+  Future<void> updateCartItem({
+    required CartItemEntity item,
+    required bool isExpress,
+  }) async {
     try {
-      await _repository.updateCartItem(item: item);
+      await _repository.updateCartItem(item: item, isExpress: isExpress);
     } catch (e) {
       rethrow;
     }
@@ -28,7 +31,7 @@ class CartUseCase {
   }
 
   /// Obtiene la lista de productos en el carrito.
-  Future<List<CartItemEntity>> getCartItems() async {
+  Future<(List<CartItemEntity>, List<CartItemEntity>)> getCartItems() async {
     return await _repository.getCartItems();
   }
 }

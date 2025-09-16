@@ -62,12 +62,41 @@ class ICartDatasource implements CartDatasource {
   }
 
   @override
-  Future<void> updateCartItem({required CartItemModel item}) async {
+  Future<void> updateCartItem({
+    required CartItemModel item,
+    bool isExpress = false,
+  }) async {
     try {
       final SharedPreferences prefs = await _prefs;
       final String? cartJson = prefs.getString(_cartKey);
+      final String? expressCartJson = prefs.getString('express_$_cartKey');
 
-      if (cartJson == null) {
+      if (isExpress) {
+        if (expressCartJson == null) {
+          return;
+        }
+
+        List<Map<String, dynamic>> expressCartItems =
+            List<Map<String, dynamic>>.from(jsonDecode(expressCartJson));
+        final int index = expressCartItems.indexWhere(
+          (Map<String, dynamic> p) => p['id'] == item.id,
+        );
+        if (index != -1) {
+          if (item.quantity == 0) {
+            expressCartItems.removeAt(index);
+          } else {
+            expressCartItems[index] = item.toJson();
+          }
+        }
+
+        await prefs.setString(
+          'express_$_cartKey',
+          jsonEncode(expressCartItems),
+        );
+        return;
+      }
+
+      if (cartJson == null || expressCartJson == null) {
         return;
       }
 
@@ -86,6 +115,22 @@ class ICartDatasource implements CartDatasource {
       }
 
       await prefs.setString(_cartKey, jsonEncode(cartItems));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getExpressCartItems() async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      final String? cartJson = prefs.getString('express_$_cartKey');
+
+      if (cartJson == null) {
+        return <Map<String, dynamic>>[];
+      }
+
+      return List<Map<String, dynamic>>.from(jsonDecode(cartJson));
     } catch (e) {
       rethrow;
     }
