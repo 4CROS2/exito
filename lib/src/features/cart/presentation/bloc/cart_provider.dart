@@ -4,6 +4,9 @@ import 'package:exito/src/features/category_detail/domain/entity/products_entity
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
+/// Provider para la gestión del estado del carrito de compras.
+///
+/// Expone métodos para agregar, eliminar y actualizar productos, y notifica cambios a la UI.
 class CartProvider extends ChangeNotifier {
   CartProvider({required CartUseCase cartUseCase})
     : _cartUseCase = cartUseCase,
@@ -24,6 +27,7 @@ class CartProvider extends ChangeNotifier {
   String get message => _message;
   Status get updateItemStatus => _updateItemStatus;
 
+  /// Obtiene los productos actuales del carrito y actualiza el estado.
   Future<void> getCartItems() async {
     try {
       _getCartItemsStatus = Status.loading;
@@ -39,6 +43,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  /// Agrega un producto al carrito y actualiza el estado.
   Future<void> addItem({required ProductEntity item}) async {
     try {
       _addToCartStatus = Status.loading;
@@ -61,11 +66,13 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  /// Elimina un producto del carrito (cantidad = 0).
   Future<void> removeItem({required ProductEntity item}) async {
     // 👇 Ahora delega en updateItemQuantity
     await updateItemQuantity(item: item, quantity: 0);
   }
 
+  /// Actualiza la cantidad de un producto en el carrito.
   Future<void> updateItemQuantity({
     required ProductEntity item,
     required int quantity,

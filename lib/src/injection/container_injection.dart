@@ -27,6 +27,9 @@ import 'package:get_it/get_it.dart';
 
 GetIt sl = GetIt.instance;
 
+/// Inicializa e inyecta todas las dependencias principales de la aplicación.
+///
+/// Registra datasources, repositorios, casos de uso y providers usando GetIt.
 Future<void> init() async {
   // Datasource
   sl.registerLazySingleton<HomeDatasource>(() => IHomeDatasource());
