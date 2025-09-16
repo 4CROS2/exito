@@ -3,7 +3,8 @@
     <application
         android:label="Grupo éxito app"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/g_e_icon"
+        android:roundIcon="@mipmap/g_e_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
