@@ -23,27 +23,30 @@ class ImageLoader extends StatefulWidget {
 class _ImageLoaderState extends State<ImageLoader> {
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      fit: widget.fit,
-      progressIndicatorBuilder: (_, _, _) {
-        return Shimmer.fromColors(
-          baseColor: context.tertiaryColor,
-          highlightColor: context.tertiaryColor.withValues(alpha: .5),
-          period: widget.animationDuration,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: context.tertiaryColor,
-              borderRadius: widget.borderRadius,
+    return ClipRRect(
+      borderRadius: widget.borderRadius,
+      child: CachedNetworkImage(
+        fit: widget.fit,
+        progressIndicatorBuilder: (_, _, _) {
+          return Shimmer.fromColors(
+            baseColor: context.tertiaryColor,
+            highlightColor: context.tertiaryColor.withValues(alpha: .5),
+            period: widget.animationDuration,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: context.tertiaryColor,
+                borderRadius: widget.borderRadius,
+              ),
+              child: SizedBox.fromSize(size: Size.infinite),
             ),
-            child: SizedBox.fromSize(size: Size.infinite),
-          ),
-        );
-      },
+          );
+        },
 
-      errorWidget: (BuildContext context, String url, Object error) {
-        return const Icon(Icons.error);
-      },
-      imageUrl: widget.imageUrl,
+        errorWidget: (BuildContext context, String url, Object error) {
+          return const Icon(Icons.error);
+        },
+        imageUrl: widget.imageUrl,
+      ),
     );
   }
 }

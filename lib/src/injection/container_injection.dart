@@ -1,4 +1,10 @@
 import 'package:exito/src/core/app/presentation/bloc/app_provider.dart';
+import 'package:exito/src/features/cart/data/datasource/cart_datasource_impl.dart';
+import 'package:exito/src/features/cart/data/repository/cart_repository_impl.dart';
+import 'package:exito/src/features/cart/domain/datasource/cart_datasource.dart';
+import 'package:exito/src/features/cart/domain/repository/cart_repository.dart';
+import 'package:exito/src/features/cart/domain/usecase/cart_usecase.dart';
+import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/category_detail/data/datasource/category_detail_datasource_impl.dart';
 import 'package:exito/src/features/category_detail/data/repository/category_detail_repository_impl.dart';
 import 'package:exito/src/features/category_detail/domain/datasource/category_detail_datasource.dart';
@@ -21,6 +27,7 @@ Future<void> init() async {
   sl.registerLazySingleton<CategoryDetailDatasource>(
     () => ICategoryDetailDatasource(),
   );
+  sl.registerLazySingleton<CartDatasource>(() => ICartDatasource());
 
   // Repository
   sl.registerLazySingleton<HomeRepository>(
@@ -28,6 +35,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<CategoryDetailRepository>(
     () => ICategoryDetailRepository(datasource: sl<CategoryDetailDatasource>()),
+  );
+  sl.registerLazySingleton<CartRepository>(
+    () => ICartRepository(datasource: sl<CartDatasource>()),
   );
 
   //usecases
@@ -37,6 +47,9 @@ Future<void> init() async {
   sl.registerLazySingleton<CategoryDetailUsecase>(
     () => CategoryDetailUsecase(repository: sl<CategoryDetailRepository>()),
   );
+  sl.registerLazySingleton<CartUseCase>(
+    () => CartUseCase(repository: sl<CartRepository>()),
+  );
 
   // Providers
   sl.registerLazySingleton<AppProvider>(() => AppProvider());
@@ -45,5 +58,8 @@ Future<void> init() async {
   );
   sl.registerFactory<CategoryDetailProvider>(
     () => CategoryDetailProvider(usecase: sl<CategoryDetailUsecase>()),
+  );
+  sl.registerLazySingleton<CartProvider>(
+    () => CartProvider(cartUseCase: sl<CartUseCase>()),
   );
 }

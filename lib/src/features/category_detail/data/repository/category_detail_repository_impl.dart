@@ -15,7 +15,7 @@ class ICategoryDetailRepository implements CategoryDetailRepository {
     final List<Map<String, dynamic>> productsMap = await _datasource
         .getProducts();
     final List<ProductEntity> products = productsMap
-        .map((Map<String, dynamic> map) => ProductModel.fromMap(map))
+        .map((Map<String, dynamic> map) => ProductModel.fromJson(map))
         .where((ProductEntity product) => product.categoryName == category)
         .toList();
     return products;
