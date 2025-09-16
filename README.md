@@ -44,18 +44,30 @@ Ejecuta:
 flutter run --dart-define=API_URL=https://fakestoreapi.com
 ```
 
-### Flag adicional para pruebas de horario
 
-Puedes agregar el flag `--dart-define=FORCE_SWITCH_VISIBLE=true` para forzar que un switch solo aparezca en las horas correspondientes, útil para validar comportamientos dependientes del tiempo.
+### Flags adicionales para pruebas
+
+- `--dart-define=CUSTOM_TIME=11`: Simula que la hora actual es 11 AM (puedes cambiar el valor por cualquier hora), útil para pruebas de lógica basada en la hora.
 
 Ejemplo:
 ```
-flutter run --dart-define=API_URL=https://fakestoreapi.com --dart-define=FORCE_SWITCH_VISIBLE=true
+flutter run --dart-define=API_URL=https://fakestoreapi.com --dart-define=FORCE_SWITCH_VISIBLE=true --dart-define=CUSTOM_TIME=11
 ```
 
 > **¿Por qué usar `--dart-define`?**
 >
 > Permite configurar la app sin modificar el código fuente, facilitando pruebas y el manejo de diferentes entornos.
+
+## Generar APK (Build)
+
+Para generar el APK de la aplicación ejecuta:
+```
+flutter build apk --dart-define=API_URL=https://fakestoreapi.com
+```
+Puedes agregar los flags adicionales si necesitas probar comportamientos específicos:
+```
+flutter build apk --dart-define=API_URL=https://fakestoreapi.com --dart-define=FORCE_SWITCH_VISIBLE=true --dart-define=CUSTOM_TIME=11
+```
 
 ## Estructura del proyecto
 
