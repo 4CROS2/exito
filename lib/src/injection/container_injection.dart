@@ -11,6 +11,12 @@ import 'package:exito/src/features/category_detail/domain/datasource/category_de
 import 'package:exito/src/features/category_detail/domain/repository/category_detail_repository.dart';
 import 'package:exito/src/features/category_detail/domain/usecase/category_detail_usecase.dart';
 import 'package:exito/src/features/category_detail/presentation/bloc/category_detail_provider.dart';
+import 'package:exito/src/features/express_mode/data/datasource/express_mode_datasource_impl.dart';
+import 'package:exito/src/features/express_mode/data/repository/express_mode_repository_impl.dart';
+import 'package:exito/src/features/express_mode/domain/datasource/express_mode_datasource.dart';
+import 'package:exito/src/features/express_mode/domain/repository/express_mode_repository.dart';
+import 'package:exito/src/features/express_mode/domain/usecase/express_mode_usecase.dart';
+import 'package:exito/src/features/express_mode/presentation/bloc/express_mode_provider.dart';
 import 'package:exito/src/features/home/data/datasource/home_datasource_impl.dart';
 import 'package:exito/src/features/home/data/repository/home_repository_impl.dart';
 import 'package:exito/src/features/home/domain/datasource/home_datasource.dart';
@@ -28,6 +34,9 @@ Future<void> init() async {
     () => ICategoryDetailDatasource(),
   );
   sl.registerLazySingleton<CartDatasource>(() => ICartDatasource());
+  sl.registerLazySingleton<ExpressModeDatasource>(
+    () => IExpressModeDatasource(),
+  );
 
   // Repository
   sl.registerLazySingleton<HomeRepository>(
@@ -38,6 +47,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<CartRepository>(
     () => ICartRepository(datasource: sl<CartDatasource>()),
+  );
+  sl.registerLazySingleton<ExpressModeRepository>(
+    () => IExpressModeRepository(datasource: sl<ExpressModeDatasource>()),
   );
 
   //usecases
@@ -50,6 +62,9 @@ Future<void> init() async {
   sl.registerLazySingleton<CartUseCase>(
     () => CartUseCase(repository: sl<CartRepository>()),
   );
+  sl.registerLazySingleton<ExpressModeUsecase>(
+    () => ExpressModeUsecase(repository: sl<ExpressModeRepository>()),
+  );
 
   // Providers
   sl.registerLazySingleton<AppProvider>(() => AppProvider());
@@ -61,5 +76,8 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<CartProvider>(
     () => CartProvider(cartUseCase: sl<CartUseCase>()),
+  );
+  sl.registerLazySingleton<ExpressModeProvider>(
+    () => ExpressModeProvider(usecase: sl<ExpressModeUsecase>()),
   );
 }

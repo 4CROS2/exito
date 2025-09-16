@@ -34,6 +34,24 @@ class AppLightTheme {
           fontFamily: Constants.fontFamily,
         ),
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white;
+          }
+          return Colors.black;
+        }),
+        trackColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.black;
+          }
+          return Constants.primaryLightColor;
+        }),
+      ),
     );
   }
 }

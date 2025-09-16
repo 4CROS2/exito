@@ -2,6 +2,7 @@ import 'package:exito/src/core/app/presentation/bloc/app_provider.dart';
 import 'package:exito/src/core/router/router.dart';
 import 'package:exito/src/core/theme/theme.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
+import 'package:exito/src/features/express_mode/presentation/bloc/express_mode_provider.dart';
 import 'package:exito/src/injection/container_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,10 @@ class _AppState extends State<App> {
           ChangeNotifierProvider<CartProvider>(
             create: (BuildContext context) =>
                 sl<CartProvider>()..getCartItems(),
+          ),
+          ChangeNotifierProvider<ExpressModeProvider>(
+            create: (BuildContext context) =>
+                sl<ExpressModeProvider>()..loadExpressMode(),
           ),
         ],
         child: Builder(

@@ -12,8 +12,7 @@ class CartUseCase {
   Future<void> updateCartItem({required CartItemEntity item}) async {
     try {
       await _repository.updateCartItem(item: item);
-    } catch (e, s) {
-      print(s);
+    } catch (e) {
       rethrow;
     }
   }
