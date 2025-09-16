@@ -2,8 +2,9 @@ import 'package:custom_rating_bar/custom_rating_bar.dart';
 import 'package:exito/src/core/constants/constants.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/category_detail/domain/entity/products_entity.dart';
-import 'package:exito/src/features/category_detail/presentation/widget/product_button.dart';
-import 'package:exito/src/features/category_detail/presentation/widget/product_quatity_button.dart';
+import 'package:exito/src/features/category_detail/presentation/widget/first_buttons.dart';
+import 'package:exito/src/features/category_detail/presentation/widget/secondary_buttons.dart';
+import 'package:exito/src/features/express_mode/presentation/bloc/express_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared/shared.dart';
@@ -66,7 +67,7 @@ class _ProductTileState extends State<ProductTile> {
                       : 0;
 
                   return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: Constants.mainPaddingValue / 2,
                     children: <Widget>[
@@ -100,44 +101,62 @@ class _ProductTileState extends State<ProductTile> {
                         ),
                       ),
                       Text(
-                        widget.product.price.toString().toCurrency(),
+                        widget.product.price.toCurrency(),
                         style: const TextStyle(
                           color: Constants.primaryLightColor,
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      AnimatedSwitcher(
-                        duration: Constants.animationDuration,
-                        transitionBuilder:
-                            (Widget child, Animation<double> animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
+                      Selector<ExpressModeProvider, bool>(
+                        selector:
+                            (
+                              BuildContext context,
+                              ExpressModeProvider provider,
+                            ) => provider.isExpressMode,
+                        builder:
+                            (BuildContext context, bool value, Widget? child) {
+                              return AnimatedSwitcher(
+                                duration: Constants.animationDuration,
+                                layoutBuilder:
+                                    (
+                                      Widget? currentChild,
+                                      List<Widget> previousChildren,
+                                    ) {
+                                      return Stack(
+                                        alignment: Alignment.bottomCenter,
+                                        children: <Widget>[
+                                          ...previousChildren,
+                                          if (currentChild != null)
+                                            currentChild,
+                                        ],
+                                      );
+                                    },
+                                transitionBuilder:
+                                    (
+                                      Widget child,
+                                      Animation<double> animation,
+                                    ) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                child: switch (value) {
+                                  true => SecondaryButton(
+                                    quantity: quantity,
+                                    cartProvider: cartProvider,
+                                    product: widget.product,
+                                  ),
+                                  false => FistButtons(
+                                    isInCart: isInCart,
+                                    quantity: quantity,
+                                    cartProvider: cartProvider,
+                                    widget: widget,
+                                  ),
+                                },
                               );
                             },
-                        child: switch (isInCart) {
-                          true => ProductQuantityButton(
-                            quantity: quantity,
-                            onAdd: () {
-                              cartProvider.updateItemQuantity(
-                                item: widget.product,
-                                quantity: quantity + 1,
-                              );
-                            },
-                            onRemove: () {
-                              cartProvider.updateItemQuantity(
-                                item: widget.product,
-                                quantity: quantity - 1,
-                              );
-                            },
-                          ),
-                          false => ProductButton(
-                            onTap: () {
-                              cartProvider.addItem(item: widget.product);
-                            },
-                          ),
-                        },
                       ),
                     ],
                   );

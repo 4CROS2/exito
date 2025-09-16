@@ -2,6 +2,8 @@ import 'package:exito/src/features/category_detail/domain/entity/products_entity
 
 /// Clase abstracta que define el contrato para la fuente de datos de detalles de categoría.
 /// Proporciona un método para obtener productos por categoría.
+/// Contrato del repositorio para obtener productos por categoría.
 abstract interface class CategoryDetailRepository {
+  /// Obtiene los productos de una categoría específica.
   Future<List<ProductEntity>> getProductsByCategory({required String category});
 }

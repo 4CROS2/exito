@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 class ProductQuantityButton extends StatefulWidget {
   const ProductQuantityButton({
     required this.quantity,
+    this.prefixIcon = Icons.remove,
+    this.suffixIcon = Icons.add,
+    this.buttonColor = Constants.primaryLightColor,
+    this.iconButtonColor = Colors.black,
     this.onAdd,
     this.onRemove,
     super.key,
@@ -11,6 +15,10 @@ class ProductQuantityButton extends StatefulWidget {
   final int quantity;
   final VoidCallback? onAdd;
   final VoidCallback? onRemove;
+  final IconData prefixIcon;
+  final IconData suffixIcon;
+  final Color? buttonColor;
+  final Color? iconButtonColor;
 
   @override
   State<ProductQuantityButton> createState() => _ProductQuantityButtonState();
@@ -29,12 +37,12 @@ class _ProductQuantityButtonState extends State<ProductQuantityButton> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            _actionButton(icon: Icons.remove, onTap: widget.onRemove),
+            _actionButton(icon: widget.prefixIcon, onTap: widget.onRemove),
             Text(
-              widget.quantity.toString(),
+              '${widget.quantity.toString()} und',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            _actionButton(icon: Icons.add, onTap: widget.onAdd),
+            _actionButton(icon: widget.suffixIcon, onTap: widget.onAdd),
           ],
         ),
       ),
@@ -46,13 +54,13 @@ class _ProductQuantityButtonState extends State<ProductQuantityButton> {
       onTap: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Constants.primaryLightColor,
+          color: widget.buttonColor,
           borderRadius: Constants.innerBorderRadius / 2,
           border: Border.all(color: Colors.black45, width: 1),
         ),
         child: Padding(
           padding: Constants.mainPaddingAll * 1.2,
-          child: Icon(icon, color: Colors.black, size: 18),
+          child: Icon(icon, color: widget.iconButtonColor, size: 18),
         ),
       ),
     );

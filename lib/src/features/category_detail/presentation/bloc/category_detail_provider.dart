@@ -3,6 +3,9 @@ import 'package:exito/src/features/category_detail/domain/usecase/category_detai
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
+/// Provider para la gestión del estado de los productos de una categoría.
+///
+/// Expone métodos para cargar productos y notifica cambios a la UI.
 class CategoryDetailProvider extends ChangeNotifier {
   CategoryDetailProvider({required CategoryDetailUsecase usecase})
     : _usecase = usecase;
@@ -13,6 +16,7 @@ class CategoryDetailProvider extends ChangeNotifier {
   Status get status => _status;
   String get message => _errorMessage;
 
+  /// Carga los productos de una categoría y actualiza el estado.
   void loadProductsByCategory({required String category}) async {
     try {
       _status = Status.loading;

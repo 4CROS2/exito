@@ -3,6 +3,7 @@ import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/category_detail/domain/entity/products_entity.dart';
 import 'package:exito/src/features/category_detail/presentation/bloc/category_detail_provider.dart';
 import 'package:exito/src/features/category_detail/presentation/widget/product_detail.dart';
+import 'package:exito/src/features/express_mode/presentation/page/express_mode_switch.dart';
 import 'package:exito/src/injection/container_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +29,9 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.categoryFilter.capitalize()),
+          centerTitle: false,
           actions: <Widget>[
+            const ExpressModeSwitch(),
             Builder(
               builder: (BuildContext context) {
                 final CartProvider cartProvider = context.watch<CartProvider>();

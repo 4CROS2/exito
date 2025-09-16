@@ -2,6 +2,8 @@ import 'package:exito/src/core/constants/constants.dart';
 import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/category_detail/presentation/widget/product_quatity_button.dart';
+import 'package:exito/src/features/category_detail/presentation/widget/secondary_buttons.dart';
+import 'package:exito/src/features/express_mode/presentation/bloc/express_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared/shared.dart';
@@ -73,11 +75,11 @@ class _CartItemTileState extends State<CartItemTile> {
                         ),
                         Text.rich(
                           TextSpan(
-                            text: widget.item.price.toString().toCurrency(),
+                            text: widget.item.price.toCurrency(),
                             children: <InlineSpan>[
                               TextSpan(
                                 text:
-                                    ' x${widget.item.quantity} = ${(widget.item.price * widget.item.quantity).toString().toCurrency()}',
+                                    ' x${widget.item.quantity} = ${(widget.item.price * widget.item.quantity).toCurrency()}',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.black54,
@@ -97,20 +99,53 @@ class _CartItemTileState extends State<CartItemTile> {
                           builder: (BuildContext context) {
                             final CartProvider cartProvider = context
                                 .read<CartProvider>();
-                            return ProductQuantityButton(
-                              quantity: widget.item.quantity,
-                              onAdd: () {
-                                cartProvider.updateItemQuantity(
-                                  item: widget.item,
-                                  quantity: widget.item.quantity + 1,
-                                );
-                              },
-                              onRemove: () {
-                                cartProvider.updateItemQuantity(
-                                  item: widget.item,
-                                  quantity: widget.item.quantity - 1,
-                                );
-                              },
+                            final ExpressModeProvider expressModeProvider =
+                                context.watch<ExpressModeProvider>();
+                            return AnimatedSwitcher(
+                              duration: Constants.animationDuration,
+                              transitionBuilder:
+                                  (Widget child, Animation<double> animation) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                              layoutBuilder:
+                                  (
+                                    Widget? currentChild,
+                                    List<Widget> previousChildren,
+                                  ) {
+                                    return Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: <Widget>[
+                                        ...previousChildren,
+                                        if (currentChild != null) currentChild,
+                                      ],
+                                    );
+                                  },
+                              child:
+                                  switch (expressModeProvider.isExpressMode) {
+                                    true => SecondaryButton(
+                                      quantity: widget.item.quantity,
+                                      cartProvider: cartProvider,
+                                      product: widget.item,
+                                    ),
+                                    false => ProductQuantityButton(
+                                      quantity: widget.item.quantity,
+                                      onAdd: () {
+                                        cartProvider.updateItemQuantity(
+                                          item: widget.item,
+                                          quantity: widget.item.quantity + 1,
+                                        );
+                                      },
+                                      onRemove: () {
+                                        cartProvider.updateItemQuantity(
+                                          item: widget.item,
+                                          quantity: widget.item.quantity - 1,
+                                        );
+                                      },
+                                    ),
+                                  },
                             );
                           },
                         ),
