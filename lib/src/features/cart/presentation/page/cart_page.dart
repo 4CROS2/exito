@@ -16,74 +16,65 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (BuildContext context) {
-        final ExpressModeProvider expressModeProvider = context
-            .watch<ExpressModeProvider>();
-        return Consumer<CartProvider>(
-          builder: (BuildContext context, CartProvider cartProvider, _) {
-            final bool isEmpty = expressModeProvider.isExpressMode
-                ? cartProvider.expressCartItems.isEmpty
-                : cartProvider.itemCount == 0;
-            final double totalPrice = cartProvider.cartItems.fold(
-              0,
-              (double sum, CartItemEntity item) =>
-                  sum + item.price * item.quantity,
-            );
+    final ExpressModeProvider expressModeProvider = context
+        .watch<ExpressModeProvider>();
+    final CartProvider cartProvider = context.watch<CartProvider>();
 
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Carrito de Compras'),
-                actions: const <Widget>[ExpressModeSwitch()],
-                centerTitle: false,
+    // 🔹 Selecciona el carrito activo según el modo exprés
+    final List<CartItemEntity> activeCartItems =
+        expressModeProvider.isExpressMode
+        ? cartProvider.expressCartItems
+        : cartProvider.cartItems;
+
+    final bool isEmpty = activeCartItems.isEmpty;
+
+    // 🔹 Calcula total solo sobre el carrito normal (persistente)
+    final double totalPrice = cartProvider.cartItems.fold(
+      0,
+      (double sum, CartItemEntity item) => sum + item.price * item.quantity,
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Carrito de Compras'),
+        actions: const <Widget>[ExpressModeSwitch()],
+        centerTitle: false,
+      ),
+      body: isEmpty
+          ? const Center(
+              child: Text(
+                'No hay items en el carrito',
+                style: TextStyle(fontSize: 18),
               ),
-              body: isEmpty
-                  ? const Center(
-                      child: Text(
-                        'No hay items en el carrito',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: Constants.contentPadding,
-                      itemCount: expressModeProvider.isExpressMode
-                          ? cartProvider.expressItemCount
-                          : cartProvider.itemCount,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CartItemTile(
-                          item: expressModeProvider.isExpressMode
-                              ? cartProvider.expressCartItems[index]
-                              : cartProvider.cartItems[index],
-                        );
-                      },
+            )
+          : ListView.builder(
+              padding: Constants.contentPadding,
+              itemCount: activeCartItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                final CartItemEntity item = activeCartItems[index];
+                return CartItemTile(item: item);
+              },
+            ),
+      bottomNavigationBar: isEmpty
+          ? null
+          : SizedBox(
+              height: 100,
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: context.primaryColor),
+                child: SafeArea(
+                  child: Padding(
+                    padding: Constants.contentPadding,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Total', style: _textStyle),
+                        Text(totalPrice.toCurrency(), style: _textStyle),
+                      ],
                     ),
-              bottomNavigationBar: isEmpty
-                  ? null
-                  : SizedBox(
-                      height: 100,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(color: context.primaryColor),
-                        child: SafeArea(
-                          child: Padding(
-                            padding: Constants.contentPadding,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text('Total', style: _textStyle),
-                                Text(
-                                  totalPrice.toCurrency(),
-                                  style: _textStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-            );
-          },
-        );
-      },
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }
