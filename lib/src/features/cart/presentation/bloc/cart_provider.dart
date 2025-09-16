@@ -24,12 +24,13 @@ class CartProvider extends ChangeNotifier {
   String get message => _message;
   Status get updateItemStatus => _updateItemStatus;
 
-  void getCartItems() async {
+  Future<void> getCartItems() async {
     try {
       _getCartItemsStatus = Status.loading;
       final List<CartItemEntity> items = await _cartUseCase.getCartItems();
-      _cartItems.clear();
-      _cartItems.addAll(items);
+      _cartItems
+        ..clear()
+        ..addAll(items);
       _getCartItemsStatus = Status.success;
       notifyListeners();
     } catch (e) {
@@ -38,13 +39,17 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  void addItem({required ProductEntity item}) async {
+  Future<void> addItem({required ProductEntity item}) async {
     try {
       _addToCartStatus = Status.loading;
+      notifyListeners();
+
       await _cartUseCase.addToCart(
         item: CartItemEntity.fromProductEntity(item, 1),
       );
+
       _cartItems.add(CartItemEntity.fromProductEntity(item, 1));
+
       _addToCartStatus = Status.success;
       notifyListeners();
     } catch (e) {
@@ -56,25 +61,40 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  void updateItemQuantity({
+  Future<void> removeItem({required ProductEntity item}) async {
+    // 👇 Ahora delega en updateItemQuantity
+    await updateItemQuantity(item: item, quantity: 0);
+  }
+
+  Future<void> updateItemQuantity({
     required ProductEntity item,
     required int quantity,
   }) async {
     try {
       _updateItemStatus = Status.loading;
+      notifyListeners();
+
       await _cartUseCase.updateCartItem(
         item: CartItemEntity.fromProductEntity(item, quantity),
       );
+
       final int index = _cartItems.indexWhere(
-        (ProductEntity p) => p.id == item.id,
+        (CartItemEntity p) => p.id == item.id,
       );
+
       if (index != -1) {
         if (quantity == 0) {
           _cartItems.removeAt(index);
         } else {
           _cartItems[index] = CartItemEntity.fromProductEntity(item, quantity);
         }
+      } else {
+        // 👇 Edge case: si no existía en memoria, pero sí llega update
+        if (quantity > 0) {
+          _cartItems.add(CartItemEntity.fromProductEntity(item, quantity));
+        }
       }
+
       _updateItemStatus = Status.success;
       notifyListeners();
     } catch (e) {
