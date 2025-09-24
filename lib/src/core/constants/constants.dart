@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class Constants {
   static const Color primaryLightColor = Color(0xffffe701);
+  static const Color primaryLightExpressModeColor = Color(0xff229acb);
   static const Color secondaryLightColor = Color(0xffffffff);
   static const Color tertiaryLightColor = Color(0xFFF3E5E5);
   static const Color primaryDarkColor = Color(0xff000000);
+  static const Color primaryDarkExpressModeColor = Color(0xff0d47a1);
   static const Color secondaryDarkColor = Color(0xff1c1c1c);
   static const Color tertiaryDarkColor = Color.fromRGBO(224, 224, 224, 1);
   static const String fontFamily = 'Questrial';
