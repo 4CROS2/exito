@@ -45,9 +45,8 @@ class _AppState extends State<App> {
             create: (_) => sl<ExpressModeProvider>()..loadExpressMode(),
           ),
         ],
-        child: Builder(
-          builder: (BuildContext context) {
-            final AppProvider appProvider = context.watch<AppProvider>();
+        child: Consumer<AppProvider>(
+          builder: (BuildContext context, AppProvider appProvider, _) {
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               title: 'Grupo Exito',

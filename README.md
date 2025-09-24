@@ -97,3 +97,20 @@ Para ejecutar la aplicación en modo desarrollo:
 
 ---
 
+## Imagenes 
+
+### Categorias
+
+![Inicio del projecto](project_images\screenshot1.png)
+
+### Productos Filtrados por categorias
+![Inicio del projecto](project_images\screenshot2.png)
+
+### Prodocutos Filtrados por categorias en modo *Express*
+
+![Inicio del projecto](project_images\express2.png)
+
+
+### Carrito de compras
+
+![Inicio del projecto](project_images\cart.png)
