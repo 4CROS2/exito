@@ -1,4 +1,5 @@
 import 'package:exito/src/core/app/presentation/bloc/app_provider.dart';
+import 'package:exito/src/core/gen/localization/app_localizations.dart';
 import 'package:exito/src/core/router/router.dart';
 import 'package:exito/src/core/theme/theme.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
@@ -37,21 +38,16 @@ class _AppState extends State<App> {
       ),
       child: MultiProvider(
         providers: <ListenableProvider<dynamic>>[
-          ChangeNotifierProvider<AppProvider>(
-            create: (BuildContext context) => sl<AppProvider>(),
-          ),
+          ChangeNotifierProvider<AppProvider>(create: (_) => sl<AppProvider>()),
           ChangeNotifierProvider<CartProvider>(
-            create: (BuildContext context) =>
-                sl<CartProvider>()..getCartItems(),
+            create: (_) => sl<CartProvider>()..getCartItems(),
           ),
           ChangeNotifierProvider<ExpressModeProvider>(
-            create: (BuildContext context) =>
-                sl<ExpressModeProvider>()..loadExpressMode(),
+            create: (_) => sl<ExpressModeProvider>()..loadExpressMode(),
           ),
         ],
-        child: Builder(
-          builder: (BuildContext context) {
-            final AppProvider appProvider = context.watch<AppProvider>();
+        child: Consumer<AppProvider>(
+          builder: (BuildContext context, AppProvider appProvider, _) {
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               title: 'Grupo Exito',
@@ -59,6 +55,9 @@ class _AppState extends State<App> {
               darkTheme: AppDarkTheme.instance,
               themeMode: appProvider.themeMode,
               routerConfig: _appRouter.router,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              locale: appProvider.locale,
             );
           },
         ),

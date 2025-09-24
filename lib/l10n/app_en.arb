@@ -1,3 +1,11 @@
 {
-    "@@locale": "en"
+    "@@locale": "en",
+    "express_mode": "Enable Express Experience",
+    "@express_mode": {
+        "description": "Text for the express mode switch"
+    },
+    "cart": "Shopping Cart",
+    "@cart": {
+        "description": "Title of the shopping cart page"
+    }
 }

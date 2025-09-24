@@ -1,4 +1,5 @@
 import 'package:exito/src/core/constants/constants.dart';
+import 'package:exito/src/core/extension/locale_extension.dart';
 import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/cart/presentation/widgets/cart_item_tile.dart';
@@ -28,15 +29,15 @@ class CartPage extends StatelessWidget {
 
     final bool isEmpty = activeCartItems.isEmpty;
 
-    // 🔹 Calcula total solo sobre el carrito normal (persistente)
-    final double totalPrice = cartProvider.cartItems.fold(
+    // 🔹 Calcula total solo sobre el carrito normal
+    final double totalPrice = activeCartItems.fold(
       0,
       (double sum, CartItemEntity item) => sum + item.price * item.quantity,
     );
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Carrito de Compras'),
+        title: Text(context.locale.cart),
         actions: const <Widget>[ExpressModeSwitch()],
         centerTitle: false,
       ),
@@ -52,7 +53,7 @@ class CartPage extends StatelessWidget {
               itemCount: activeCartItems.length,
               itemBuilder: (BuildContext context, int index) {
                 final CartItemEntity item = activeCartItems[index];
-                return CartItemTile(item: item);
+                return CartItemTile(item: item, key: ValueKey<int>(item.id));
               },
             ),
       bottomNavigationBar: isEmpty

@@ -87,14 +87,9 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
                           contentPadding: Constants.contentPadding,
                           aspectRatio: 1 / 1.5,
                           items: products,
-                          builder:
-                              (
-                                BuildContext context,
-                                int index,
-                                ProductEntity item,
-                              ) {
-                                return ProductTile(product: item);
-                              },
+                          builder: (_, _, ProductEntity item) {
+                            return ProductTile(product: item);
+                          },
                         );
                       },
                 );

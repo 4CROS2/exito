@@ -1,4 +1,5 @@
 import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
+import 'package:exito/src/features/cart/domain/entity/cart_list_getter.dart';
 import 'package:exito/src/features/cart/domain/repository/cart_repository.dart';
 
 /// Caso de uso principal para la gestión del carrito de compras.
@@ -9,29 +10,38 @@ class CartUseCase {
   final CartRepository _repository;
 
   /// Agrega un producto al carrito.
-  Future<void> addToCart({required CartItemEntity item}) async {
+  Future<void> addItemToCart({required CartItemEntity item}) async {
     await _repository.addToCart(item: item);
   }
 
+  Future<void> addToExpressCart({required CartItemEntity item}) async {
+    await _repository.addToExpressCart(item: item);
+  }
+
   /// Actualiza un producto existente en el carrito.
-  Future<void> updateCartItem({
-    required CartItemEntity item,
-    required bool isExpress,
-  }) async {
+  Future<void> updateCartItem({required CartItemEntity item}) async {
     try {
-      await _repository.updateCartItem(item: item, isExpress: isExpress);
+      await _repository.updateCartItem(item: item);
     } catch (e) {
       rethrow;
     }
   }
 
+  Future<void> updateExpressCart({required CartItemEntity item}) async {
+    await _repository.updateExpressCart(item: item);
+  }
+
   /// Elimina un producto del carrito por su ID.
-  Future<void> removeFromCart({required String id}) async {
+  Future<void> removeFromCart({required int id}) async {
     await _repository.removeFromCart(id: id);
   }
 
+  Future<void> removeFromExpressCart({required int id}) async {
+    await _repository.removeFromExpressCart(id: id);
+  }
+
   /// Obtiene la lista de productos en el carrito.
-  Future<(List<CartItemEntity>, List<CartItemEntity>)> getCartItems() async {
+  Future<CartListsGetter> getCartItems() async {
     return await _repository.getCartItems();
   }
 }

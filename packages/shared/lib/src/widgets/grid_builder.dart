@@ -17,6 +17,10 @@ import 'package:shared/widgets.dart';
 /// [animationDuration] es la duración de la animación de aparición
 /// [contentPadding] es el padding alrededor de la grilla
 ///
+///
+
+typedef WidgetBuilder<T> = Widget Function(BuildContext context, int index, T item);
+
 class GridBuilder<T> extends StatelessWidget {
   const GridBuilder({
     required this.items,
@@ -36,7 +40,7 @@ class GridBuilder<T> extends StatelessWidget {
   final EdgeInsets contentPadding;
   final double aspectRatio;
   final Future<void> Function() onRefresh;
-  final Widget Function(BuildContext context, int index, T item) builder;
+  final WidgetBuilder<T> builder;
 
   @override
   Widget build(BuildContext context) {

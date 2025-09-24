@@ -8,8 +8,7 @@ class ICartDatasource implements CartDatasource {
   static const String _cartKey = 'cart_items';
 
   /// Obtiene la instancia de SharedPreferences
-  Future<SharedPreferences> get _prefs async =>
-      await SharedPreferences.getInstance();
+  Future<SharedPreferences> get _prefs async => SharedPreferences.getInstance();
 
   /// Agrega un item al carrito
   /// [item] El item a agregar
@@ -33,22 +32,26 @@ class ICartDatasource implements CartDatasource {
   /// Elimina un item del carrito
   /// [id] El id del item a eliminar
   @override
-  Future<void> removeFromCart({required String id}) async {
-    final SharedPreferences prefs = await _prefs;
-    final String? cartJson = prefs.getString(_cartKey);
+  Future<void> removeFromCart({required int id}) async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      final String? cartJson = prefs.getString(_cartKey);
 
-    if (cartJson == null) {
-      return;
+      if (cartJson == null) {
+        return;
+      }
+      List<Map<String, dynamic>> cartItems = List<Map<String, dynamic>>.from(
+        jsonDecode(cartJson),
+      );
+
+      cartItems.removeWhere((Map<String, dynamic> item) => item['id'] == id);
+      await prefs.setString(_cartKey, jsonEncode(cartItems));
+    } catch (e) {
+      rethrow;
     }
-
-    List<Map<String, dynamic>> cartItems = List<Map<String, dynamic>>.from(
-      jsonDecode(cartJson),
-    );
-    cartItems.removeWhere((Map<String, dynamic> item) => item['id'] == id);
-
-    await prefs.setString(_cartKey, jsonEncode(cartItems));
   }
 
+  /// Obtiene todos los items del carrito
   @override
   Future<List<Map<String, dynamic>>> getCartItems() async {
     final SharedPreferences prefs = await _prefs;
@@ -62,41 +65,12 @@ class ICartDatasource implements CartDatasource {
   }
 
   @override
-  Future<void> updateCartItem({
-    required CartItemModel item,
-    bool isExpress = false,
-  }) async {
+  Future<void> updateCartItem({required CartItemModel item}) async {
     try {
       final SharedPreferences prefs = await _prefs;
       final String? cartJson = prefs.getString(_cartKey);
-      final String? expressCartJson = prefs.getString('express_$_cartKey');
 
-      if (isExpress) {
-        if (expressCartJson == null) {
-          return;
-        }
-
-        List<Map<String, dynamic>> expressCartItems =
-            List<Map<String, dynamic>>.from(jsonDecode(expressCartJson));
-        final int index = expressCartItems.indexWhere(
-          (Map<String, dynamic> p) => p['id'] == item.id,
-        );
-        if (index != -1) {
-          if (item.quantity == 0) {
-            expressCartItems.removeAt(index);
-          } else {
-            expressCartItems[index] = item.toJson();
-          }
-        }
-
-        await prefs.setString(
-          'express_$_cartKey',
-          jsonEncode(expressCartItems),
-        );
-        return;
-      }
-
-      if (cartJson == null || expressCartJson == null) {
+      if (cartJson == null) {
         return;
       }
 
@@ -106,13 +80,8 @@ class ICartDatasource implements CartDatasource {
       final int index = cartItems.indexWhere(
         (Map<String, dynamic> p) => p['id'] == item.id,
       );
-      if (index != -1) {
-        if (item.quantity == 0) {
-          cartItems.removeAt(index);
-        } else {
-          cartItems[index] = item.toJson();
-        }
-      }
+
+      cartItems[index] = item.toJson();
 
       await prefs.setString(_cartKey, jsonEncode(cartItems));
     } catch (e) {
@@ -120,12 +89,12 @@ class ICartDatasource implements CartDatasource {
     }
   }
 
+  /// Obtiene todos los items del carrito express
   @override
   Future<List<Map<String, dynamic>>> getExpressCartItems() async {
     try {
       final SharedPreferences prefs = await _prefs;
       final String? cartJson = prefs.getString('express_$_cartKey');
-
       if (cartJson == null) {
         return <Map<String, dynamic>>[];
       }
@@ -133,6 +102,73 @@ class ICartDatasource implements CartDatasource {
       return List<Map<String, dynamic>>.from(jsonDecode(cartJson));
     } catch (e) {
       rethrow;
+    }
+  }
+
+  /// Agrega un item al carrito express
+  @override
+  Future<void> addToExpressCart({required CartItemModel item}) async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      final String? cartJson = prefs.getString('express_$_cartKey');
+
+      List<Map<String, dynamic>> cartItems = <Map<String, dynamic>>[];
+
+      if (cartJson != null) {
+        cartItems = List<Map<String, dynamic>>.from(jsonDecode(cartJson));
+      }
+
+      cartItems.add(item.toJson());
+
+      await prefs.setString('express_$_cartKey', jsonEncode(cartItems));
+    } catch (e) {
+      throw Exception('Error al agregar al carrito express: $e');
+    }
+  }
+
+  /// Elimina un item del carrito express
+  @override
+  Future<void> removeFromExpressCart({required int id}) async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      final String? cartJson = prefs.getString('express_$_cartKey');
+
+      if (cartJson == null) {
+        return;
+      }
+      List<Map<String, dynamic>> cartItems = List<Map<String, dynamic>>.from(
+        jsonDecode(cartJson),
+      );
+
+      cartItems.removeWhere((Map<String, dynamic> item) => item['id'] == id);
+      await prefs.setString('express_$_cartKey', jsonEncode(cartItems));
+    } catch (e) {
+      throw Exception('Error al eliminar del carrito express: $e');
+    }
+  }
+
+  @override
+  Future<void> updateExpressCart({required CartItemModel item}) async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      final String? cartJson = prefs.getString('express_$_cartKey');
+
+      if (cartJson == null) {
+        return;
+      }
+
+      List<Map<String, dynamic>> cartItems = List<Map<String, dynamic>>.from(
+        jsonDecode(cartJson),
+      );
+      final int index = cartItems.indexWhere(
+        (Map<String, dynamic> p) => p['id'] == item.id,
+      );
+
+      cartItems[index] = item.toJson();
+
+      await prefs.setString('express_$_cartKey', jsonEncode(cartItems));
+    } catch (e) {
+      throw Exception('Error al actualizar el carrito express: $e');
     }
   }
 }

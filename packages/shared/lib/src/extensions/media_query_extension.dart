@@ -14,5 +14,5 @@ extension MediaQueryExtension on BuildContext {
   Size get screenSize => mediaQuery.size;
   double get screenWidth => screenSize.width;
   double get screenHeight => screenSize.height;
-  EdgeInsets get padding => mediaQuery.padding;
+  EdgeInsets get padding => MediaQuery.paddingOf(this);
 }

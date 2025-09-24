@@ -1,6 +1,8 @@
+import 'package:exito/src/core/extension/locale_extension.dart';
 import 'package:exito/src/features/express_mode/presentation/bloc/express_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared/shared.dart';
 
 class ExpressModeSwitch extends StatefulWidget {
   const ExpressModeSwitch({super.key});
@@ -27,11 +29,11 @@ class _ExpressModeSwitchState extends State<ExpressModeSwitch> {
                 SizedBox(
                   width: 100,
                   child: Text(
-                    'Activar la experiencia Express',
+                    context.locale.express_mode,
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      color: context.textTheme.bodyMedium?.color,
                       height: 1,
                     ),
                   ),

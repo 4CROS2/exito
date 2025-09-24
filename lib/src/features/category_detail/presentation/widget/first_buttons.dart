@@ -45,7 +45,7 @@ class FistButtons extends StatelessWidget {
         false => ProductButton(
           label: 'Agregar',
           onTap: () {
-            cartProvider.addItem(item: widget.product);
+            cartProvider.addItemToCart(item: widget.product);
           },
         ),
       },

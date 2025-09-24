@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class IHomeDatasource implements HomeDatasource {
   @override
   Future<List<Map<String, dynamic>>> getCategories() async {
-    final String apiUrl = const String.fromEnvironment('API_URL');
+    const String apiUrl = String.fromEnvironment('API_URL');
     try {
       final http.Response response = await http.get(
         Uri.parse('$apiUrl/products'),
