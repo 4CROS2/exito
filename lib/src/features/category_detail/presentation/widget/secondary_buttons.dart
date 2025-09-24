@@ -45,7 +45,10 @@ class SecondaryButton extends StatelessWidget {
               },
 
               onRemove: () {
-                cartProvider.removeExpressItem(item: product);
+                cartProvider.addAndUpdateExpressItemQuantity(
+                  item: product,
+                  quantity: 0,
+                );
               },
             ),
           ],

@@ -27,6 +27,10 @@ class CartUseCase {
     }
   }
 
+  Future<void> updateExpressCart({required CartItemEntity item}) async {
+    await _repository.updateExpressCart(item: item);
+  }
+
   /// Elimina un producto del carrito por su ID.
   Future<void> removeFromCart({required int id}) async {
     await _repository.removeFromCart(id: id);

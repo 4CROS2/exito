@@ -49,7 +49,13 @@ class ICartRepository implements CartRepository {
 
   @override
   Future<void> removeFromExpressCart({required int id}) async {
-    throw UnimplementedError();
+    await _datasource.removeFromExpressCart(id: id);
+  }
+
+  @override
+  Future<void> updateExpressCart({required CartItemEntity item}) {
+    final CartItemModel model = CartItemModel.fromEntity(item);
+    return _datasource.updateExpressCart(item: model);
   }
 
   @override
@@ -66,4 +72,6 @@ class ICartRepository implements CartRepository {
         .map((Map<String, dynamic> item) => CartItemModel.fromJson(json: item))
         .toList();
   }
+  
+  
 }

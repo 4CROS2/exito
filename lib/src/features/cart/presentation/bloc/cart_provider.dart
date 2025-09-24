@@ -71,37 +71,9 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addExpressItem({required ProductEntity item}) async {
-    try {
-      final CartItemEntity product = CartItemEntity.fromProductEntity(
-        product: item,
-        quantity: 1,
-      );
-      await _cartUseCase.addToExpressCart(item: product);
-      _expressCartItems.add(product);
-      notifyListeners();
-    } catch (e) {
-      _addToCartStatus = Status.error;
-      notifyListeners();
-    } finally {
-      _addToCartStatus = Status.initial;
-      notifyListeners();
-    }
-  }
-
   /// ❌ Elimina un producto (cantidad = 0).
   Future<void> removeItem({required ProductEntity item}) async {
     await updateItemQuantity(item: item, quantity: 0);
-  }
-
-  Future<void> removeExpressItem({required ProductEntity item}) async {
-    final int index = _expressCartItems.indexWhere(
-      (CartItemEntity p) => p.id == item.id,
-    );
-    if (index != -1) {
-      _expressCartItems.removeAt(index);
-      notifyListeners();
-    }
   }
 
   /// 🔄 Actualiza cantidad en carrito
@@ -147,7 +119,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  /// Actualiza cantidad en carrito exprés
+  /// Actualiza cantidad en carrito en modo exprés
   Future<void> addAndUpdateExpressItemQuantity({
     required ProductEntity item,
     required int quantity,
@@ -170,12 +142,12 @@ class CartProvider extends ChangeNotifier {
           await _cartUseCase.removeFromExpressCart(id: item.id);
         } else {
           _expressCartItems[index] = product;
-          await _cartUseCase.updateCartItem(item: product);
+          await _cartUseCase.updateExpressCart(item: product);
         }
       } else {
         if (quantity > 0) {
           _expressCartItems.add(product);
-          await _cartUseCase.updateCartItem(item: product);
+          await _cartUseCase.addToExpressCart(item: product);
         }
       }
 
@@ -190,7 +162,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  /// 🧹 Limpia el carrito exprés (cuando sales de modo exprés)
+  /// 🧹 Limpia el carrito exprés (cuando sale del modo exprés)
   void clearExpressCart() {
     _expressCartItems.clear();
     notifyListeners();

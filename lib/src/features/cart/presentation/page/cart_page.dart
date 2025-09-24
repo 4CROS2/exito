@@ -28,8 +28,8 @@ class CartPage extends StatelessWidget {
 
     final bool isEmpty = activeCartItems.isEmpty;
 
-    // 🔹 Calcula total solo sobre el carrito normal (persistente)
-    final double totalPrice = cartProvider.cartItems.fold(
+    // 🔹 Calcula total solo sobre el carrito normal
+    final double totalPrice = activeCartItems.fold(
       0,
       (double sum, CartItemEntity item) => sum + item.price * item.quantity,
     );
@@ -52,7 +52,7 @@ class CartPage extends StatelessWidget {
               itemCount: activeCartItems.length,
               itemBuilder: (BuildContext context, int index) {
                 final CartItemEntity item = activeCartItems[index];
-                return CartItemTile(item: item);
+                return CartItemTile(item: item, key: ValueKey<int>(item.id));
               },
             ),
       bottomNavigationBar: isEmpty

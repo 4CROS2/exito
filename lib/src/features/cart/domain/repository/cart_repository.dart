@@ -22,4 +22,6 @@ abstract interface class CartRepository {
   Future<void> addToExpressCart({required CartItemEntity item});
 
   Future<void> removeFromExpressCart({required int id});
+
+  Future<void> updateExpressCart({required CartItemEntity item}) async {}
 }
