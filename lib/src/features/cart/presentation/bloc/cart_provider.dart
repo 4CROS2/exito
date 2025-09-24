@@ -1,4 +1,5 @@
 import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
+import 'package:exito/src/features/cart/domain/entity/cart_list_getter.dart';
 import 'package:exito/src/features/cart/domain/usecase/cart_usecase.dart';
 import 'package:exito/src/features/category_detail/domain/entity/products_entity.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,6 @@ class CartProvider extends ChangeNotifier {
   Status _getCartItemsStatus = Status.initial;
   Status _updateItemStatus = Status.initial;
   final String _message = '';
-
   final List<CartItemEntity> _cartItems;
   final List<CartItemEntity> _expressCartItems;
 
@@ -35,15 +35,10 @@ class CartProvider extends ChangeNotifier {
   Future<void> getCartItems() async {
     try {
       _getCartItemsStatus = Status.loading;
-      final (List<CartItemEntity>, List<CartItemEntity>) items =
-          await _cartUseCase.getCartItems();
+      final CartListsGetter items = await _cartUseCase.getCartItems();
 
-      _cartItems
-        ..clear()
-        ..addAll(items.$1);
-      _expressCartItems
-        ..clear()
-        ..addAll(items.$2);
+      _cartItems.addAll(items.cart);
+      _expressCartItems.addAll(items.express);
       _getCartItemsStatus = Status.success;
       notifyListeners();
     } catch (e) {
@@ -52,38 +47,19 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  /// ➕ Agrega un producto (normal o exprés)
-  Future<void> addItem({
-    required ProductEntity item,
-    bool isExpress = false,
-  }) async {
-    if (isExpress) {
-      // 👉 exprés: solo en memoria
-      final int index = _expressCartItems.indexWhere(
-        (CartItemEntity p) => p.id == item.id,
-      );
-      if (index != -1) {
-        _expressCartItems[index] = CartItemEntity.fromProductEntity(
-          item,
-          _expressCartItems[index].quantity + 1,
-        );
-      } else {
-        _expressCartItems.add(CartItemEntity.fromProductEntity(item, 1));
-      }
-      notifyListeners();
-      return;
-    }
-
+  /// ➕ Agrega un producto (cantidad = 1).
+  Future<void> addItemToCart({required ProductEntity item}) async {
     try {
+      final CartItemEntity product = CartItemEntity.fromProductEntity(
+        product: item,
+        quantity: 1,
+      );
+
       _addToCartStatus = Status.loading;
       notifyListeners();
 
-      await _cartUseCase.addToCart(
-        item: CartItemEntity.fromProductEntity(item, 1),
-      );
-
-      _cartItems.add(CartItemEntity.fromProductEntity(item, 1));
-
+      _cartItems.add(product);
+      await _cartUseCase.addItemToCart(item: product);
       _addToCartStatus = Status.success;
       notifyListeners();
     } catch (e) {
@@ -95,53 +71,51 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  /// ❌ Elimina un producto (cantidad = 0).
-  Future<void> removeItem({
-    required ProductEntity item,
-    required bool isExpress,
-  }) async {
-    await updateItemQuantity(item: item, quantity: 0, isExpress: isExpress);
+  Future<void> addExpressItem({required ProductEntity item}) async {
+    try {
+      final CartItemEntity product = CartItemEntity.fromProductEntity(
+        product: item,
+        quantity: 1,
+      );
+      await _cartUseCase.addToExpressCart(item: product);
+      _expressCartItems.add(product);
+      notifyListeners();
+    } catch (e) {
+      _addToCartStatus = Status.error;
+      notifyListeners();
+    } finally {
+      _addToCartStatus = Status.initial;
+      notifyListeners();
+    }
   }
 
-  /// 🔄 Actualiza cantidad en carrito (normal o exprés).
+  /// ❌ Elimina un producto (cantidad = 0).
+  Future<void> removeItem({required ProductEntity item}) async {
+    await updateItemQuantity(item: item, quantity: 0);
+  }
+
+  Future<void> removeExpressItem({required ProductEntity item}) async {
+    final int index = _expressCartItems.indexWhere(
+      (CartItemEntity p) => p.id == item.id,
+    );
+    if (index != -1) {
+      _expressCartItems.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  /// 🔄 Actualiza cantidad en carrito
   Future<void> updateItemQuantity({
     required ProductEntity item,
     required int quantity,
-    bool isExpress = false,
   }) async {
-    if (isExpress) {
-      final int index = _expressCartItems.indexWhere(
-        (CartItemEntity p) => p.id == item.id,
-      );
-
-      if (index != -1) {
-        if (quantity == 0) {
-          _expressCartItems.removeAt(index);
-        } else {
-          _expressCartItems[index] = CartItemEntity.fromProductEntity(
-            item,
-            quantity,
-          );
-        }
-      } else {
-        if (quantity > 0) {
-          _expressCartItems.add(
-            CartItemEntity.fromProductEntity(item, quantity),
-          );
-        }
-      }
-      notifyListeners();
-      return;
-    }
-
     try {
+      final CartItemEntity product = CartItemEntity.fromProductEntity(
+        product: item,
+        quantity: quantity,
+      );
       _updateItemStatus = Status.loading;
       notifyListeners();
-
-      await _cartUseCase.updateCartItem(
-        isExpress: isExpress,
-        item: CartItemEntity.fromProductEntity(item, quantity),
-      );
 
       final int index = _cartItems.indexWhere(
         (CartItemEntity p) => p.id == item.id,
@@ -150,12 +124,58 @@ class CartProvider extends ChangeNotifier {
       if (index != -1) {
         if (quantity == 0) {
           _cartItems.removeAt(index);
+          await _cartUseCase.removeFromCart(id: item.id);
         } else {
-          _cartItems[index] = CartItemEntity.fromProductEntity(item, quantity);
+          _cartItems[index] = product;
+          await _cartUseCase.updateCartItem(item: product);
         }
       } else {
         if (quantity > 0) {
-          _cartItems.add(CartItemEntity.fromProductEntity(item, quantity));
+          _cartItems.add(product);
+          await _cartUseCase.updateCartItem(item: product);
+        }
+      }
+
+      _updateItemStatus = Status.success;
+      notifyListeners();
+    } catch (e) {
+      _updateItemStatus = Status.error;
+      notifyListeners();
+    } finally {
+      _updateItemStatus = Status.initial;
+      notifyListeners();
+    }
+  }
+
+  /// Actualiza cantidad en carrito exprés
+  Future<void> addAndUpdateExpressItemQuantity({
+    required ProductEntity item,
+    required int quantity,
+  }) async {
+    try {
+      final CartItemEntity product = CartItemEntity.fromProductEntity(
+        product: item,
+        quantity: quantity,
+      );
+      _updateItemStatus = Status.loading;
+      notifyListeners();
+
+      final int index = _expressCartItems.indexWhere(
+        (CartItemEntity p) => p.id == item.id,
+      );
+
+      if (index != -1) {
+        if (quantity == 0) {
+          _expressCartItems.removeAt(index);
+          await _cartUseCase.removeFromExpressCart(id: item.id);
+        } else {
+          _expressCartItems[index] = product;
+          await _cartUseCase.updateCartItem(item: product);
+        }
+      } else {
+        if (quantity > 0) {
+          _expressCartItems.add(product);
+          await _cartUseCase.updateCartItem(item: product);
         }
       }
 

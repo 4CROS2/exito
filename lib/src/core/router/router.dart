@@ -4,6 +4,7 @@ import 'package:exito/src/features/home/presentation/page/home.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
+  
   late final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
     initialLocation: '/home',
@@ -20,9 +21,7 @@ class AppRouter {
       GoRoute(
         path: '/cart',
         name: 'cart',
-        builder: (_, _) {
-          return const CartPage();
-        },
+        builder: (_, _) => const CartPage(),
       ),
     ],
   );

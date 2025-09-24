@@ -37,16 +37,12 @@ class _AppState extends State<App> {
       ),
       child: MultiProvider(
         providers: <ListenableProvider<dynamic>>[
-          ChangeNotifierProvider<AppProvider>(
-            create: (BuildContext context) => sl<AppProvider>(),
-          ),
+          ChangeNotifierProvider<AppProvider>(create: (_) => sl<AppProvider>()),
           ChangeNotifierProvider<CartProvider>(
-            create: (BuildContext context) =>
-                sl<CartProvider>()..getCartItems(),
+            create: (_) => sl<CartProvider>()..getCartItems(),
           ),
           ChangeNotifierProvider<ExpressModeProvider>(
-            create: (BuildContext context) =>
-                sl<ExpressModeProvider>()..loadExpressMode(),
+            create: (_) => sl<ExpressModeProvider>()..loadExpressMode(),
           ),
         ],
         child: Builder(

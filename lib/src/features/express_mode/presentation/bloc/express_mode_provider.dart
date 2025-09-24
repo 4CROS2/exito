@@ -12,7 +12,7 @@ class ExpressModeProvider extends ChangeNotifier {
 
   final ExpressModeUsecase _usecase;
 
-  final String customTime = const String.fromEnvironment(
+  static const String customTime = String.fromEnvironment(
     'CUSTOM_TIME',
     defaultValue: '10',
   );

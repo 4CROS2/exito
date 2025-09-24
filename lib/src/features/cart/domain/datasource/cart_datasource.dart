@@ -6,16 +6,15 @@ abstract interface class CartDatasource {
   Future<void> addToCart({required CartItemModel item});
 
   /// Elimina un producto del carrito por su ID en la fuente de datos.
-  Future<void> removeFromCart({required String id});
+  Future<void> removeFromCart({required int id});
 
   /// Obtiene todos los productos del carrito en formato mapa.
   Future<List<Map<String, dynamic>>> getCartItems();
 
   /// Actualiza un producto existente en el carrito en la fuente de datos.
-  Future<void> updateCartItem({
-    required CartItemModel item,
-    bool isExpress = false,
-  });
+  Future<void> updateCartItem({required CartItemModel item});
 
   Future<List<Map<String, dynamic>>> getExpressCartItems();
+
+  Future<void> addToExpressCart({required CartItemModel item});
 }

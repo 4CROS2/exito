@@ -38,15 +38,14 @@ class SecondaryButton extends StatelessWidget {
               buttonColor: const Color(0xff229acb),
               quantity: quantity,
               onAdd: () {
-                cartProvider.updateItemQuantity(
+                cartProvider.addAndUpdateExpressItemQuantity(
                   item: product,
                   quantity: quantity + 1,
-                  isExpress: true,
                 );
               },
 
               onRemove: () {
-                cartProvider.removeItem(item: product, isExpress: true);
+                cartProvider.removeExpressItem(item: product);
               },
             ),
           ],

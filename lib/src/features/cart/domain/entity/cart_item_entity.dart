@@ -18,7 +18,10 @@ class CartItemEntity extends ProductEntity {
   final int quantity;
 
   /// Crea una instancia de CartItemEntity a partir de un ProductEntity y una cantidad.
-  static CartItemEntity fromProductEntity(ProductEntity product, int quantity) {
+  static CartItemEntity fromProductEntity({
+    required ProductEntity product,
+    required int quantity,
+  }) {
     return CartItemEntity(
       id: product.id,
       title: product.title,
