@@ -1,4 +1,5 @@
 import 'package:exito/src/core/app/presentation/bloc/app_provider.dart';
+import 'package:exito/src/core/gen/localization/app_localizations.dart';
 import 'package:exito/src/core/router/router.dart';
 import 'package:exito/src/core/theme/theme.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
@@ -54,6 +55,9 @@ class _AppState extends State<App> {
               darkTheme: AppDarkTheme.instance,
               themeMode: appProvider.themeMode,
               routerConfig: _appRouter.router,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              locale: appProvider.locale,
             );
           },
         ),

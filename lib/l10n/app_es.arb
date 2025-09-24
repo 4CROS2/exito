@@ -1,3 +1,12 @@
 {
-  "@@locale": "es"
+  "@@locale": "es",
+  "express_mode": "Activar experiencia Express",
+  "@express_mode": {
+    "description": "Texto para el interruptor de modo express"
+  },
+  "cart": "Carrito de compras",
+  "@cart": {
+    "description": "Título de la página del carrito de compras"
+  }
+  
 }

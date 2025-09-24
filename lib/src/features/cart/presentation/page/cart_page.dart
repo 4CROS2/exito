@@ -1,4 +1,5 @@
 import 'package:exito/src/core/constants/constants.dart';
+import 'package:exito/src/core/extension/locale_extension.dart';
 import 'package:exito/src/features/cart/domain/entity/cart_item_entity.dart';
 import 'package:exito/src/features/cart/presentation/bloc/cart_provider.dart';
 import 'package:exito/src/features/cart/presentation/widgets/cart_item_tile.dart';
@@ -36,7 +37,7 @@ class CartPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Carrito de Compras'),
+        title: Text(context.locale.cart),
         actions: const <Widget>[ExpressModeSwitch()],
         centerTitle: false,
       ),
